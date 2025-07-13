@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Device Location Detector</title>
+    <title>Device 1 Detector</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -413,7 +413,6 @@
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
         }
 
-        /* Light Mode for Music Player */
         body.light-mode .music-player-sidebar {
             background-color: #ffffff;
             box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
@@ -695,34 +694,27 @@
             ipLoader.style.display = 'flex';
 
             try {
-                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipResponse = await fetch('https://ipwho.is/');
                 if (!ipResponse.ok) {
                     throw new Error(`Failed to fetch IP address: ${ipResponse.statusText}`);
                 }
                 const ipData = await ipResponse.json();
-                const currentIpAddress = ipData.ip;
 
-                const geoResponse = await fetch(`https://ip-api.com/json/${currentIpAddress}`);
-                if (!geoResponse.ok) {
-                    throw new Error(`Failed to fetch location data: ${geoResponse.statusText}`);
-                }
-                const geoData = await geoResponse.json();
-
-                if (geoData.status === 'success') {
+                if (ipData.success) {
                     ipLocationDisplay.innerHTML = `
-                        <p><strong class="text-gray-400">IP Address:</strong> ${currentIpAddress}</p>
-                        <p><strong class="text-gray-400">Country:</strong> ${geoData.country} (${geoData.countryCode})</p>
-                        <p><strong class="text-gray-400">Region:</strong> ${geoData.regionName} (${geoData.region})</p>
-                        <p><strong class="text-gray-400">City:</strong> ${geoData.city}</p>
-                        <p><strong class="text-gray-400">Zip:</strong> ${geoData.zip}</p>
-                        <p><strong class="text-gray-400">Latitude:</strong> ${geoData.lat}</p>
-                        <p><strong class="text-gray-400">Longitude:</strong> ${geoData.lon}</p>
-                        <p><strong class="text-gray-400">Timezone:</strong> ${geoData.timezone}</p>
-                        <p><strong class="text-gray-400">ISP:</strong> ${geoData.isp}</p>
-                        <p><strong class="text-gray-400">Organization:</strong> ${geoData.org}</p>
+                        <p><strong class="text-gray-400">IP Address:</strong> ${ipData.ip}</p>
+                        <p><strong class="text-gray-400">Country:</strong> ${ipData.country} (${ipData.country_code})</p>
+                        <p><strong class="text-gray-400">Region:</strong> ${ipData.region} (${ipData.region_code})</p>
+                        <p><strong class="text-gray-400">City:</strong> ${ipData.city}</p>
+                        <p><strong class="text-gray-400">Zip:</strong> ${ipData.postal}</p>
+                        <p><strong class="text-gray-400">Latitude:</strong> ${ipData.latitude}</p>
+                        <p><strong class="text-gray-400">Longitude:</strong> ${ipData.longitude}</p>
+                        <p><strong class="text-gray-400">Timezone:</strong> ${ipData.timezone.id}</p>
+                        <p><strong class="text-gray-400">ISP:</strong> ${ipData.isp}</p>
+                        <p><strong class="text-gray-400">Organization:</strong> ${ipData.org}</p>
                     `;
                 } else {
-                    displayMessage(ipAlertBox, `IP Geolocation failed: ${geoData.message || 'Unknown error'}`, true);
+                    displayMessage(ipAlertBox, `IP Geolocation failed: ${ipData.message || 'Unknown error'}`, true);
                 }
 
             } catch (error) {
